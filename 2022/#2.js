@@ -14,11 +14,11 @@ const fakeData = `
 
 10000`;
 
-// TODO: Solve
-function getMaxThreeCalories(caloriesInput) {
+// TODO: Bad solution, should be a better one
+function getMaxCalories(caloriesInput, count) {
   const caloriesCounts = caloriesInput.split('\n').map((item) => Number(item));
 
-  let maxCalories = 0;
+  let caloriesSum = [];
   let currentCalories = 0;
 
   for (let i = 0; i < caloriesCounts.length; i++) {
@@ -26,12 +26,15 @@ function getMaxThreeCalories(caloriesInput) {
 
     // Re-calculate max calories when there is the NEXT Elf or there is the LAST Elf
     if (caloriesCounts[i] === 0 || i === caloriesCounts.length - 1) {
-      maxCalories = Math.max(maxCalories, currentCalories);
+      caloriesSum.push(currentCalories);
       currentCalories = 0;
     }
   }
 
-  return maxCalories;
+  return caloriesSum
+    .sort((a, b) => a - b)
+    .slice(-count)
+    .reduce((sum, num) => sum + num, 0);
 }
 
-console.log(getMaxThreeCalories(fakeData));
+console.log(getMaxCalories(fakeData, 3));
