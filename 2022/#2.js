@@ -15,6 +15,8 @@ const fakeData = `
 10000`;
 
 // TODO: Bad solution, should be a better one
+
+// This is the universal solution for top ${count} calories
 function getMaxCalories(caloriesInput, count) {
   const caloriesCounts = caloriesInput.split('\n').map((item) => Number(item));
 
