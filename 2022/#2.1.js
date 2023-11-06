@@ -2502,25 +2502,18 @@ B Y`;
 // Rock Paper Scissors -> ABC -> XYZ -> 1 | 2 | 3 + 0 | 3 | 6
 
 // Try out with arrays
-// const enemyVariants = ['A', 'B', 'C'];
-// const myVariants = ['X', 'Y', 'Z'];
-
-const win = {
-  A: 'Y',
-  B: 'Z',
-  C: 'X',
-};
-
-const lose = {
-  A: 'Z',
-  B: 'X',
-  C: 'Y',
-};
+const enemyVariants = ['A', 'B', 'C'];
+const myVariants = ['X', 'Y', 'Z'];
 
 function calculateScore(enemyVar, myVar) {
-  const winScore =
-    myVar === win[enemyVar] ? 6 : myVar === lose[enemyVar] ? 0 : 3;
-  const rpsScore = myVar === 'X' ? 1 : myVar === 'Y' ? 2 : 3;
+  const myIndex = myVariants.indexOf(myVar);
+  const enemyIndex = enemyVariants.indexOf(enemyVar);
+
+  const isWin = myIndex === enemyIndex + 1 || myIndex === enemyIndex - 2;
+  const isDraw = myIndex === enemyIndex;
+
+  const winScore = isDraw ? 3 : isWin ? 6 : 0;
+  const rpsScore = myIndex + 1;
 
   return winScore + rpsScore;
 }
