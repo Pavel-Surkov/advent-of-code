@@ -23,12 +23,15 @@ function calculateScore(enemyVar, myVar) {
 }
 
 function getFinalScore(strategy) {
-  return strategy.split('\n').reduce((sumScore, round) => {
-    const [enemyVar, myVar] = round.split(' ');
-    const score = calculateScore(enemyVar, myVar);
+  return strategy
+    .split('\n')
+    .filter((str) => str.length === 3)
+    .reduce((sumScore, round) => {
+      const [enemyVar, myVar] = round.split(' ');
+      const score = calculateScore(enemyVar, myVar);
 
-    return sumScore + score;
-  }, 0);
+      return sumScore + score;
+    }, 0);
 }
 
 console.log(getFinalScore(input));
