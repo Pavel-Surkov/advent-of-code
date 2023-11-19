@@ -1,8 +1,9 @@
 import fs from 'fs';
+import path from 'path';
 
-const file = fs.readFileSync('./input.txt').toString();
+const input = fs.readFileSync(path.join(__dirname, './input.txt')).toString();
 
-const lines = file.split('\n').filter((x) => x.length);
+const lines = input.split('\n').filter((x) => x.length);
 
 // File or Directory
 interface Item {
