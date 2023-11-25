@@ -41,4 +41,5 @@ function getSumSignalStrength(data: string[]) {
   return signalStrengths.reduce((sum, strength) => sum + strength, 0);
 }
 
+// Part one
 console.log(getSumSignalStrength(lines));

@@ -20,7 +20,10 @@ class TailPositionsStore {
 // Store tail positions to count
 const store = new TailPositionsStore();
 
-type Coords = [number, number];
+type Coords = {
+  x: number;
+  y: number;
+};
 
 type DirToVector = {
   R: Coords;
@@ -29,49 +32,53 @@ type DirToVector = {
   D: Coords;
 };
 
+// X  axis L -> R
+// Y axis U -> D
 const dirToVector: DirToVector = {
-  R: [1, 0],
-  L: [-1, 0],
-  U: [0, -1],
-  D: [0, 1],
+  R: { x: 1, y: 0 },
+  L: { x: -1, y: 0 },
+  U: { x: 0, y: -1 },
+  D: { x: 0, y: 1 },
 };
 
 function isTailMoving(headCoords: Coords, tailCoords: Coords) {
-  let [diffX, diffY] = [
-    Math.abs(headCoords[0] - tailCoords[0]),
-    Math.abs(headCoords[1] - tailCoords[1]),
+  const [diffX, diffY] = [
+    Math.abs(headCoords.x - tailCoords.x),
+    Math.abs(headCoords.y - tailCoords.y),
   ];
 
-  return diffX <= 1 && diffY <= 1;
+  return diffX > 1 || diffY > 1;
 }
 
-// Use vectors to know position of Head and Tail
-// If Head and Tail have a gap => Tail moves to last Head position
-// In this case, add vector position of Tail to Set
-function getTailPositionsCount(arr: string[]) {
-  let headCoords: Coords = [0, 0];
-  let tailCoords: Coords = [0, 0];
+function getTailPositionsCount(linesArr: string[]) {
+  let headCoords: Coords = { x: 0, y: 0 };
+  let tailCoords: Coords = { x: 0, y: 0 };
 
-  arr.forEach((line) => {
+  store.addPosition(`${tailCoords.x}_${tailCoords.y}`);
+
+  linesArr.forEach((line) => {
     const direction = line.split(' ')[0] as keyof DirToVector;
-    const steps = +direction.split(' ')[1];
+    const steps = +line.split(' ')[1];
 
     const directionVector = dirToVector[direction];
 
-    for (let i = 0; i < steps; i++) {
+    for (let step = 0; step < +steps; step++) {
+      const previousHeadCoords = Object.assign({}, headCoords);
+
+      headCoords.x = headCoords.x + directionVector.x;
+      headCoords.y = headCoords.y + directionVector.y;
+
       if (isTailMoving(headCoords, tailCoords)) {
-        headCoords = [
-          headCoords[0] + directionVector[0],
-          headCoords[1] + directionVector[1],
-        ];
-      } else {
+        tailCoords.x = previousHeadCoords.x;
+        tailCoords.y = previousHeadCoords.y;
+
+        store.addPosition(`${tailCoords.x}_${tailCoords.y}`);
       }
     }
-
-    console.log(direction, steps);
   });
 
   return store.getPositionsCount();
 }
 
+// Part one
 console.log(getTailPositionsCount(lines));
