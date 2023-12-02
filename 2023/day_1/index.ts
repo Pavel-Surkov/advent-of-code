@@ -5,7 +5,7 @@ const input = fs.readFileSync(path.join(__dirname, './input.txt')).toString();
 
 const lines = input.split('\n').filter((line) => line !== '');
 
-// Task #1
+// Part one
 function getSumCalibrationValues(lines: string[]) {
   return lines.reduce((calibrationSum, line) => {
     const digits = {
@@ -36,7 +36,7 @@ function getSumCalibrationValues(lines: string[]) {
 
 console.log(getSumCalibrationValues(lines));
 
-// Task #2
+// Part two
 function getSumActualCalibrationValues(lines: string[]) {
   const wordDigits = [
     'one',
