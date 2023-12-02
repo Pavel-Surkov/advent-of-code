@@ -25,6 +25,7 @@ type MonkeyData = {
 
 type MonkeyDataWithInspections = MonkeyData & { inspections: number };
 
+// Part one
 function parseMonkeyLine(monkeyLines: string[]) {
   return monkeyLines.reduce((data: MonkeyData[], lineStr) => {
     const [
@@ -93,6 +94,8 @@ function countMonkeysInspections(monkeysData: MonkeyData[], rounds: number) {
         const nextMonkeyId = matchesTest
           ? monkeyData['trueThrow']
           : monkeyData['falseThrow'];
+
+        // This mutation causes makes countMonkeysInspections function dirty
         withInspections[nextMonkeyId].items.push(newItemAfterInspect);
       });
 
@@ -103,14 +106,10 @@ function countMonkeysInspections(monkeysData: MonkeyData[], rounds: number) {
         inspections: monkeyData.inspections + inspectionsCount,
       };
     });
-
-    console.log(withInspections);
   }
 
   return withInspections;
 }
-
-const monkeyDataWithInspections = countMonkeysInspections(data, 20);
 
 function countMonkeyBusiness(
   data: MonkeyDataWithInspections[],
@@ -123,5 +122,55 @@ function countMonkeyBusiness(
     .reduce((level, inspections) => level * inspections);
 }
 
-// Get sum of top 2 monkey inspections
-console.log(countMonkeyBusiness(monkeyDataWithInspections, 2));
+// const monkeyDataWithInspections = countMonkeysInspections(data, 20);
+
+// console.log(countMonkeyBusiness(monkeyDataWithInspections, 2));
+
+// Part two
+function countHardMonkeysInspections(
+  monkeysData: MonkeyData[],
+  rounds: number
+) {
+  let withInspections = [...monkeysData].map((data) => ({
+    ...data,
+    inspections: 0,
+  }));
+
+  const maxItem = withInspections.reduce(
+    (acc, current) => acc * current.divisibleBy,
+    1
+  );
+
+  for (let round = 0; round < rounds; round++) {
+    withInspections = withInspections.map((monkeyData) => {
+      const inspectionsCount = monkeyData.items.length;
+
+      monkeyData.items.forEach((item) => {
+        let newItem = getItemAfterOperation(item, monkeyData.operation);
+        const matchesTest = newItem % monkeyData.divisibleBy === 0;
+
+        if (newItem > maxItem) {
+          newItem = newItem % maxItem;
+        }
+
+        const nextMonkeyId = matchesTest
+          ? monkeyData['trueThrow']
+          : monkeyData['falseThrow'];
+        withInspections[nextMonkeyId].items.push(newItem);
+      });
+
+      monkeyData.items = [];
+
+      return {
+        ...monkeyData,
+        inspections: monkeyData.inspections + inspectionsCount,
+      };
+    });
+  }
+
+  return withInspections;
+}
+
+const hardDataWithInspections = countHardMonkeysInspections(data, 10000);
+
+console.log(countMonkeyBusiness(hardDataWithInspections, 2));
