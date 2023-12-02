@@ -22,7 +22,6 @@ type Game = {
   cubesCounts: CubesCount[];
 };
 
-// Part one
 function getGamesData(lines: string[]): Game[] {
   return lines.map((line) => {
     const id = Number(line.split(/\:|;/).shift()?.split(' ')[1]);
@@ -32,7 +31,7 @@ function getGamesData(lines: string[]): Game[] {
       .reduce((countsArr: CubesCount[], set) => {
         const splitted = set.trim().split(', ');
 
-        const newCounts: CubesCount = {
+        const newCounts = {
           red: 0,
           green: 0,
           blue: 0,
@@ -62,6 +61,7 @@ function getGamesData(lines: string[]): Game[] {
 
 const games = getGamesData(lines);
 
+// Part one
 function calculatePossibleGamesIds(games: Game[]) {
   return games.reduce((sumGameIds, currentGame) => {
     const cubesCounts = currentGame.cubesCounts;
@@ -81,3 +81,29 @@ function calculatePossibleGamesIds(games: Game[]) {
 console.log(calculatePossibleGamesIds(games));
 
 // Part two
+function calculateFewestCubesPower(games: Game[]) {
+  return games.reduce((power, currentGame) => {
+    const cubesCounts = currentGame.cubesCounts;
+
+    const maxCubesCounts = {
+      red: 0,
+      green: 0,
+      blue: 0,
+    };
+
+    for (let cubesCount of cubesCounts) {
+      for (let color in cubesCount) {
+        if (cubesCount[color] > maxCubesCounts[color]) {
+          maxCubesCounts[color] = cubesCount[color];
+        }
+      }
+    }
+
+    return (
+      power +
+      maxCubesCounts['red'] * maxCubesCounts['green'] * maxCubesCounts['blue']
+    );
+  }, 0);
+}
+
+console.log(calculateFewestCubesPower(games));
