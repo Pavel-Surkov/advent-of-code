@@ -19,34 +19,35 @@ const maxPossibleCubesCount: CubesCount = {
 
 type Game = {
   id: number;
-  maxCubesCount: CubesCount;
+  cubesCounts: CubesCount[];
 };
 
 // Part one
 function getGamesData(lines: string[]): Game[] {
   return lines.map((line) => {
     const id = Number(line.split(/\:|;/).shift()?.split(' ')[1]);
-    const maxCubesCount: CubesCount = line
+    const cubesCounts: CubesCount[] = line
       .split(/\:|;/)
       .slice(1)
-      .reduce(
-        (maxCounts, set) => {
-          const splitted = set.trim().split(', ');
+      .reduce((countsArr: CubesCount[], set) => {
+        const splitted = set.trim().split(', ');
 
-          const newMaxCounts = maxCounts;
+        const newCounts: CubesCount = {
+          red: 0,
+          green: 0,
+          blue: 0,
+        };
 
-          splitted.forEach((str) => {
-            const [count, color] = str.split(' ');
+        splitted.forEach((str) => {
+          const [count, color] = str.split(' ');
 
-            if (newMaxCounts[color] < +count) {
-              newMaxCounts[color] = +count;
-            }
-          });
+          if (newCounts[color] < +count) {
+            newCounts[color] = +count;
+          }
+        });
 
-          return newMaxCounts;
-        },
-        { red: 0, green: 0, blue: 0 }
-      );
+        return [...countsArr, newCounts];
+      }, []);
 
     if (isNaN(id)) {
       console.error('id is NaN');
@@ -54,7 +55,7 @@ function getGamesData(lines: string[]): Game[] {
 
     return {
       id,
-      maxCubesCount,
+      cubesCounts,
     };
   });
 }
@@ -63,11 +64,13 @@ const games = getGamesData(lines);
 
 function calculatePossibleGamesIds(games: Game[]) {
   return games.reduce((sumGameIds, currentGame) => {
-    const maxCubesCount = currentGame.maxCubesCount;
+    const cubesCounts = currentGame.cubesCounts;
 
-    for (let color in maxCubesCount) {
-      if (maxCubesCount[color] > maxPossibleCubesCount[color]) {
-        return sumGameIds;
+    for (let cubesCount of cubesCounts) {
+      for (let color in cubesCount) {
+        if (cubesCount[color] > maxPossibleCubesCount[color]) {
+          return sumGameIds;
+        }
       }
     }
 
