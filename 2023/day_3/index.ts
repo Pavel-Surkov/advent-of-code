@@ -98,11 +98,49 @@ function getPartNumbers(lines: string[]) {
     return filtered;
   }, []);
 
-  return filteredNumbers;
+  // Part two
+  const gearMap = new Map<string, number[]>();
+
+  numbersArr.forEach((current) => {
+    const allCoords = getAllCoordsAround(current);
+
+    allCoords.forEach((coord) => {
+      if (!lines[coord.y] || !lines[coord.y][coord.x]) {
+        return;
+      }
+
+      const detail = lines[coord.y][coord.x];
+
+      if (detail === '*') {
+        const key = `${coord.x},${coord.y}`;
+        const previousValues = gearMap.get(key);
+
+        previousValues
+          ? gearMap.set(key, [...previousValues, current.num])
+          : gearMap.set(key, [current.num]);
+      }
+    });
+  });
+
+  let sumGearRatios = 0;
+
+  for (let numbers of gearMap.values()) {
+    if (numbers.length === 2) {
+      sumGearRatios += numbers[0] * numbers[1];
+    }
+  }
+
+  return { filteredNumbers, sumGearRatios };
 }
 
-const numbers = getPartNumbers(lines);
+const { filteredNumbers, sumGearRatios } = getPartNumbers(lines);
 
-const res = numbers.reduce((sum, detailNumber) => sum + detailNumber, 0);
-
+// Part one
+const res = filteredNumbers.reduce(
+  (sum, detailNumber) => sum + detailNumber,
+  0
+);
 console.log(res);
+
+// Part two
+console.log(sumGearRatios);
