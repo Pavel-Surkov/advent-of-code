@@ -3,6 +3,7 @@ import path from 'path';
 
 const input = fs.readFileSync(path.join(__dirname, './input.txt')).toString();
 
+// Quick binary search implementation
 function binarySearch<T>(value: T, arr: T[]) {
   if (arr.length === 0) return false;
 
@@ -43,6 +44,7 @@ const sumPoints = input
     let currentPoints = 0;
 
     winningNumbers.forEach((num) => {
+      // sortedCardNumbers.includes(num) is better
       if (binarySearch(num, sortedCardNumbers)) {
         currentPoints === 0 ? (currentPoints = 1) : (currentPoints *= 2);
       }
