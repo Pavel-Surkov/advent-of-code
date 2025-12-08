@@ -47,11 +47,7 @@ function createSafeCrackerV3(startPoint: number) {
     let nextPoint = currentPoint;
 
     for (let i = 0; i < pointsCount; i++) {
-      if (direction === 'L') {
-        nextPoint = nextPoint - 1;
-      } else if (direction === 'R') {
-        nextPoint = nextPoint + 1;
-      }
+      nextPoint = nextPoint + DirectionToMultiplyer[direction];
 
       if (nextPoint > 99) {
         nextPoint = 0;
