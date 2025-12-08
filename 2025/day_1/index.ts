@@ -36,40 +36,32 @@ function createSafeCracker(maxPoint: number, startPoint: number) {
 const resultZerosCount = createSafeCracker(99, 50);
 console.log(`Part one answer: ${resultZerosCount}`); // 1147
 
-// Нужно проверить вообще пересекает циферблат ли точку нуля при вращении
-// Далее если пересекает, то разделить число pointsCount на maxPoint и получить число оборотов циферблата
-function createSafeCrackerV2(startPoint: number) {
+// Part two
+function createSafeCrackerV3(startPoint: number) {
   let zerosCounter = 0;
 
   lines.reduce((currentPoint, instr) => {
     const direction = instr[0] as 'L' | 'R';
     const pointsCount = +instr.slice(1);
 
-    const nextPointsNotNormalized =
-      currentPoint + DirectionToMultiplyer[direction] * pointsCount;
+    let nextPoint = currentPoint;
 
-    let nextPoint = nextPointsNotNormalized % 100;
+    for (let i = 0; i < pointsCount; i++) {
+      if (direction === 'L') {
+        nextPoint = nextPoint - 1;
+      } else if (direction === 'R') {
+        nextPoint = nextPoint + 1;
+      }
 
-    while (nextPoint < 0) {
-      nextPoint = nextPoint + 100;
-    }
+      if (nextPoint > 99) {
+        nextPoint = 0;
+      } else if (nextPoint < 0) {
+        nextPoint = 99;
+      }
 
-    if (
-      nextPointsNotNormalized > 99 ||
-      (nextPointsNotNormalized < 0 && currentPoint !== 0)
-    ) {
-      const dialFullRotationsCount = Math.floor(
-        Math.abs(nextPointsNotNormalized / 100)
-      );
-
-      zerosCounter = zerosCounter + dialFullRotationsCount;
-
-      // Если от -99 до 0 то dialFullRotationsCount === 0, а нужно добавлять 1
-      if (nextPointsNotNormalized > -100 && nextPointsNotNormalized < 0) {
+      if (nextPoint === 0) {
         zerosCounter++;
       }
-    } else if (nextPoint === 0) {
-      zerosCounter++;
     }
 
     return nextPoint;
@@ -78,6 +70,5 @@ function createSafeCrackerV2(startPoint: number) {
   return zerosCounter;
 }
 
-const resultZerosCountV2 = createSafeCrackerV2(50);
-console.log(`Part two answer: ${resultZerosCountV2}`);
-// Неверно (5913)
+const resultZerosCountV3 = createSafeCrackerV3(50);
+console.log(`Part two answer: ${resultZerosCountV3}`); // 6789
