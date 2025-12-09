@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { withTimeLog } from '../../withTimeLog';
 
 const input = fs.readFileSync(path.join(__dirname, './input.txt')).toString();
 
@@ -50,9 +51,5 @@ function sumInvalidIds(idLines: string[]) {
     }, 0);
 }
 
-const res = sumInvalidIds(lines);
-// 18828970995 is too low
-// 18898578637 is too high
-// 18832188853 is not correct???
-// 18893502033 nahuy!
-console.log(`Part one answer: ${res}`);
+console.log('Part one.');
+withTimeLog(sumInvalidIds, lines); // 18893502033
